@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_users` (
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `birth_date` DATE NULL,
+  `gender` ENUM('male', 'female', 'company') NULL,
   `address` VARCHAR(150) NULL,
   `picture` VARCHAR(255) NULL COMMENT 'Image de profil',
   `register_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -73,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_accounts` (
   `date_insert` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_account`))
 ENGINE = InnoDB
-COMMENT = 'Table du compte utilisateur dans laquelle il credite son compte. Il peut le durant la periode de son abonnement .initialisee au montant null a la creation de l\'utilisateur. Ses depots seront pris en compte ici.';
+COMMENT = 'Table du compte utilisateur dans laquelle il credite son compte. Il peut le durant la periode de son abonnement .initialisee au montant null a la creation de l\''utilisateur. Ses depots seront pris en compte ici.';
 
 
 -- -----------------------------------------------------
@@ -90,6 +91,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_transactions` (
   `status` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id_transact`))
 ENGINE = InnoDB;
+COMMENT = 'Table historique de toutes les transactions(abonnements, credit de compte pour les paiements, credit/debit lors des paiements, debit par le systeme en cas de retrait de fond';
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
