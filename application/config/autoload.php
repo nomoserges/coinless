@@ -60,7 +60,8 @@ $autoload['packages'] = array();
 */
 $autoload['libraries'] = array(
     'prolib'
-    #,'database'
+    ,'ciqrcode'
+    ,'database'
     ,'session'
     ,'form_validation'
     ,'email'
@@ -154,4 +155,6 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array();
+$autoload['model'] = array(
+    'usersmodel'
+);

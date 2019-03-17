@@ -60,6 +60,10 @@ class Prolib {
         } else {    return false;   }
     }
 
+    /** Clean phone number input
+     * @param $value
+     * @return bool|mixed|string|string[]|null
+     */
     public static function sanitizePhoneNumber($value){
         # eliminate every char except 0-9
         $phoneNum = filter_var($value, FILTER_SANITIZE_NUMBER_INT);
@@ -90,5 +94,19 @@ class Prolib {
 
     private static function strReplaceFirst($from, $to, $content) {
         return preg_replace('/'.preg_quote($from, '/').'/', $to, $content, 1);
+    }
+
+    public static function qrGenerate($input){
+        # we generate de qrcode
+        $qr_image = uniqid().'_'.$input.'.png';
+        $params['data'] = $input;
+        $params['level'] = 'H';
+        $params['size'] = 32;
+        $params['savename'] =FCPATH."writable/qrimages/".$qr_image;
+        if(self::$CI->ciqrcode->generate($params)) {
+            return $qr_image;
+        } else {
+            echo false;
+        }
     }
 }

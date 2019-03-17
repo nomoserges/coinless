@@ -16,29 +16,32 @@ class Opener extends CI_Controller {
         if( $credential[0] !== 'invalid' ){
             # we check password
             # create array of data model
-
+            $datamodel = array('token' => '', 'email' => '', 'phone_number' => '',
+                'firstname' => $_REQUEST['firstname'],
+                'lastname' => $_REQUEST['lastname'],
+                'password' => sha1($_REQUEST['userpassword']));
             switch ($credential[0]){
                 case 'phone':
-                    $token = random_string('numeric', 6);
-                    $email = '';
-                    $phone_number = $credential[1];
+                    $datamodel['token'] = random_string('numeric', 3).'-'.random_string('numeric', 3);
+                    $datamodel['email'] = '';
+                    $datamodel['phone_number'] = $credential[1];
                     break;
                 case 'email':
-                    $token = random_string('alnum', 32);
-                    $email = $credential[1];
-                    $phone_number = '';
+                    $datamodel['token'] = random_string('alnum', 32);
+                    $datamodel['email'] = $credential[1];
+                    $datamodel['phone_number'] = '';
                     break;
             }
             # we prepare data for model
-            $datamodel = array(
-                'email' => $email
-            );
-        }
-        print_r($credential);
-        if( $credential[0] == 'phone' ) {
-            $token = random_string('numeric', 6);
-        } elseif ( $credential[0] == 'email') {
-            $token = random_string('alnum', 32);
+            $registerHandler = $this->usersmodel->_register($datamodel);
+            //print_r($registerHandler); die('back');
+            if( true == is_array($registerHandler)) {
+                $xs = $this->prolib::qrGenerate( $registerHandler['userid'] );
+                var_dump($xs);
+            } else {
+                echo 'error on registering';
+            }
+
         }
 
     }

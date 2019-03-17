@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_users` (
   `email` VARCHAR(150) NULL,
   `phone_number` VARCHAR(45) NULL,
   `password` VARCHAR(32) NOT NULL,
+  `token` VARCHAR(45) NOT NULL,
   `urgency_code` VARCHAR(8) NULL,
   `qrcode` VARCHAR(45) NOT NULL,
   `firstname` VARCHAR(45) NOT NULL,
@@ -74,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_accounts` (
   `date_insert` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_account`))
 ENGINE = InnoDB
-COMMENT = 'Table du compte utilisateur dans laquelle il credite son compte. Il peut le durant la periode de son abonnement .initialisee au montant null a la creation de l\''utilisateur. Ses depots seront pris en compte ici.';
+COMMENT = 'Table du compte utilisateur dans laquelle il credite son compte. Il peut le durant la periode de son abonnement .initialisee au montant null a la creation de l utilisateur. Ses depots seront pris en compte ici.';
 
 
 -- -----------------------------------------------------
