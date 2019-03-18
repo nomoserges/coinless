@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_users` (
   `password` VARCHAR(32) NOT NULL,
   `token` VARCHAR(45) NOT NULL,
   `urgency_code` VARCHAR(8) NULL,
-  `qrcode` VARCHAR(45) NOT NULL,
+  `qrcode` LONGBLOB NOT NULL,
   `firstname` VARCHAR(45) NOT NULL,
   `lastname` VARCHAR(45) NOT NULL,
   `birth_date` DATE NULL,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `coinless`.`cor_users` (
   UNIQUE INDEX `userid_UNIQUE` (`userid` ASC),
   UNIQUE INDEX `phone_number_UNIQUE` (`phone_number` ASC),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
-  UNIQUE INDEX `qrcode_UNIQUE` (`qrcode` ASC),
+  /*UNIQUE INDEX `qrcode_UNIQUE` (`qrcode` ASC),*/
   UNIQUE INDEX `username_UNIQUE` (`username` ASC))
 ENGINE = InnoDB;
 

@@ -98,13 +98,13 @@ class Prolib {
 
     public static function qrGenerate($input){
         # we generate de qrcode
-        $qr_image = uniqid().'_'.$input.'.png';
+        $qr_image = $input.'.png';
         $params['data'] = $input;
         $params['level'] = 'H';
         $params['size'] = 32;
         $params['savename'] =FCPATH."writable/qrimages/".$qr_image;
         if(self::$CI->ciqrcode->generate($params)) {
-            return $qr_image;
+            return addslashes(file_get_contents($params['savename']));
         } else {
             echo false;
         }

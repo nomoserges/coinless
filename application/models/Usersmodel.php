@@ -27,7 +27,9 @@ class Usersmodel extends CI_Model {
     }
 
     public function _register($data) {
-        $arr = array('userid' => self::generateUserID());
+        $userid = self::generateUserID();
+        $qrcode = $this->prolib::qrGenerate( $userid );
+        $arr = array('userid' => $userid, 'qrcode' => $qrcode);
         $data = array_merge($data, $arr);
         if( $this->db->insert(tblUsers, $data) ){
             unset($data['password']);

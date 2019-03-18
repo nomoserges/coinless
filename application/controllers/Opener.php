@@ -37,13 +37,29 @@ class Opener extends CI_Controller {
             //print_r($registerHandler); die('back');
             if( true == is_array($registerHandler)) {
                 $xs = $this->prolib::qrGenerate( $registerHandler['userid'] );
-                var_dump($xs);
+                # on case of email or phone number
+                switch ($credential[0]){
+                    case 'phone':
+                        # send sms
+                        break;
+                    case 'email':
+                        # send email
+                        echo $this->prolib::sendMail($registerHandler['email'],
+                            'Coinless - Activation',
+                            $this->load->view('emails/register_confirmation',
+                                $registerHandler, TRUE));
+                        break;
+                }
             } else {
                 echo 'error on registering';
             }
 
         }
 
+    }
+
+    public function confirm($token, $credential) {
+        echo $token.' - '.$credential;
     }
 
     /** We'll check if credential already in DB.

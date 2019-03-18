@@ -21,6 +21,6 @@ class Welcome extends CI_Controller {
 	public function index()
 	{
 		$this->load->view('welcome_message');
-        echo $this->prolib->coors();
+        echo $_SERVER['SERVER_NAME'];
 	}
 }
