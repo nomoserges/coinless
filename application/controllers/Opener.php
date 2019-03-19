@@ -5,6 +5,11 @@ class Opener extends CI_Controller {
 
 
     public function index(){
+
+
+    }
+
+    public function register(){
         $credential = [];
         # we check if the credential is an email or phone number
         if( false === $this->prolib->checkEmail($_REQUEST['credential']) ){
@@ -19,7 +24,9 @@ class Opener extends CI_Controller {
             $datamodel = array('token' => '', 'email' => '', 'phone_number' => '',
                 'firstname' => $_REQUEST['firstname'],
                 'lastname' => $_REQUEST['lastname'],
+                'gender' => $_REQUEST['gender'],
                 'password' => sha1($_REQUEST['userpassword']));
+            # on test la valeur du credential pour renseigner l'email ou le telephone
             switch ($credential[0]){
                 case 'phone':
                     $datamodel['token'] = random_string('numeric', 3).'-'.random_string('numeric', 3);
@@ -35,12 +42,14 @@ class Opener extends CI_Controller {
             # we prepare data for model
             $registerHandler = $this->usersmodel->_register($datamodel);
             //print_r($registerHandler); die('back');
+            # si l'inscription est passee, on obtient le tableau des infos
             if( true == is_array($registerHandler)) {
-                $xs = $this->prolib::qrGenerate( $registerHandler['userid'] );
+                //$xs = $this->prolib::qrGenerate( $registerHandler['userid'] );
                 # on case of email or phone number
                 switch ($credential[0]){
                     case 'phone':
-                        # send sms
+                        # send sms information.
+                        $this->prolib::jsonOutput('info', 'Confirmer inscription avec le code envoyé', $registerHandler);
                         break;
                     case 'email':
                         # send email
@@ -48,19 +57,49 @@ class Opener extends CI_Controller {
                             'Coinless - Activation',
                             $this->load->view('emails/register_confirmation',
                                 $registerHandler, TRUE));
+                        $this->prolib::jsonOutput('info', 'Confirmer inscription avec le mail envoyé', $registerHandler);
                         break;
                 }
             } else {
                 echo 'error on registering';
+                $this->prolib::jsonOutput('error', "Echec de l'inscription. Veuillez ré-essayer", []);
             }
 
+        }
+    }
+
+    /** Confirm of registration */
+    public function confirm() {
+        $xcv = $this->usersmodel->_confirm($_REQUEST);
+        # Une erreur lors de la confirmation
+        if( false == $xcv ){
+            $this->prolib::jsonOutput('error', 'Echec de la confirmation', []);
+        } else {
+            # tout est ok.
+            $this->prolib::jsonOutput('info', '1', $xcv);
         }
 
     }
 
-    public function confirm($token, $credential) {
-        echo $token.' - '.$credential;
+    /** Login.  */
+    public function login() {
+        $wxc = $this->usersmodel->findWithCredentials($_REQUEST['credential'], true, $_REQUEST['password']);
+        if( false === $wxc ) {
+            $this->prolib::jsonOutput('error', 'Echec de la connexion', []);
+        } else {
+            $this->prolib::jsonOutput('info', '1', $wxc);
+        }
     }
+
+    public function setprofile(){
+        $wxc = $this->usersmodel->_updateProfile($_REQUEST);
+        if( false === $wxc ) {
+            $this->prolib::jsonOutput('error', 'Echec de la mise a jour', []);
+        } else {
+            $this->prolib::jsonOutput('info', '1', $wxc);
+        }
+    }
+
 
     /** We'll check if credential already in DB.
      * @param $credential

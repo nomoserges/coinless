@@ -23,12 +23,11 @@ class Prolib {
      * @param $msgBody
      * @param array $msgData
      */
-    public static function jsonOutput(string $msgType, string $msgTitle, string $msgBody, array $msgData){
+    public static function jsonOutput(string $msgType, string $msgTitle, array $msgData){
         echo json_encode(
             array(
                 'msgType' => $msgType,
                 'msgTitle' => $msgTitle,
-                'msgText' => $msgBody,
                 'msgData' => $msgData,
             )
         );
@@ -96,15 +95,19 @@ class Prolib {
         return preg_replace('/'.preg_quote($from, '/').'/', $to, $content, 1);
     }
 
-    public static function qrGenerate($input){
+    public static function qrGenerate($filename, $input){
         # we generate de qrcode
-        $qr_image = $input.'.png';
+        $qr_image = $filename.'.png';
         $params['data'] = $input;
         $params['level'] = 'H';
-        $params['size'] = 32;
+        $params['size'] = 117;
         $params['savename'] =FCPATH."writable/qrimages/".$qr_image;
+        # if the same filename exist, we remove it before add new one.
+        if( file_exists($params['savename']) && is_file($params['savename']) ){
+            @unlink($params['savename']);
+        }
         if(self::$CI->ciqrcode->generate($params)) {
-            return addslashes(file_get_contents($params['savename']));
+            return true;
         } else {
             echo false;
         }

@@ -73,10 +73,10 @@
                 <div class="links">
                     <p style="color:#333;">Hello <?php echo $firstname; ?>, welcome to our easy coinless payment. To start using it,
                     please click the link bellow to activate your account.</p>
-                    <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/conf/<?php echo $token.'/'.$userid; ?>">Active account</a>
+                    <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/opener/confirm/?token=<?php echo $token.'&credential='.$userid; ?>">Active account</a>
                 </div>
                 <div class="links" style="position:fixed;bottom:10px;">
-                    <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/#">Polycies</a>
+                    <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/#">Policies</a>
                     <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/#">Privacy</a>
                     <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/#">Faq</a>
                     <a href="http://<?php echo $_SERVER['SERVER_NAME']; ?>/#">Blog</a>

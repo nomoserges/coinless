@@ -11,10 +11,10 @@ class Usersmodel extends CI_Model {
         $isFind = true;
         while ($isFind) {
             # Search the generate's ID in the table
-            $sql = "SELECT userid FROM ". self::$usersTable ." WHERE userid = '".$newUserID."' LIMIT 1";
-            $query = $this->db->query( $sql );
+            $sql = "SELECT userid FROM ".self::$usersTable." WHERE userid = ? LIMIT 1";
+            $query = $this->db->query( $sql, $newUserID );
             # Check isFind
-            if( intval($query->num_rows()) > 0 ) {
+            if( $query->num_rows() > 0 ) {
                 # code exist
                 $isFind = true;
             }else {
@@ -26,10 +26,14 @@ class Usersmodel extends CI_Model {
         return $newUserID;
     }
 
+    /** Registering
+     * @param $data
+     * @return array|bool
+     */
     public function _register($data) {
         $userid = self::generateUserID();
-        $qrcode = $this->prolib::qrGenerate( $userid );
-        $arr = array('userid' => $userid, 'qrcode' => $qrcode);
+        //$qrcode = $this->prolib::qrGenerate( $userid );
+        $arr = array('userid' => $userid);
         $data = array_merge($data, $arr);
         if( $this->db->insert(tblUsers, $data) ){
             unset($data['password']);
@@ -38,6 +42,81 @@ class Usersmodel extends CI_Model {
             # we put this $this->db->error(); on log
             return false;
         }
+    }
+
+    public function _confirm($data){
+        $qsd = $data['credential'];
+        # we check first if credential and token are in DB.
+        $sql = "SELECT userid FROM ".self::$usersTable
+            ." WHERE token = '".$data['token']."' AND ( userid = ? OR phone_number = ? OR email = ?) LIMIT 1";
+        $query1 = $this->db->query($sql,
+            array($qsd, $qsd, $qsd));
+        if( $query1->num_rows() == 1){
+            # we go to set is_activated to true.
+            $updateQuery = "UPDATE ".self::$usersTable ." SET is_activated = 1, token='' WHERE userid = '".$data['credential']
+                ."' OR email = '".$data['credential']."' OR phone_number = '".$data['credential']."' OR username = '".$data['credential']."' ";
+            if( true === $this->db->query($updateQuery) ){
+                # the update work properly : We create the qr code and return user's infos for localstorage.
+                $dataX = $this->findWithCredentials($data['credential'], false, '');
+                $this->_userQrCode($dataX);
+                return $dataX;
+            } else {   return false;   }
+        } else {  return false;   }
+    }
+
+    /** Look credentials for user (login)
+     * @param $credential
+     * @param $withPassword: true or false
+     * @param $password
+     * @return mixed
+     */
+    public function findWithCredentials($credential, $withPassword, $password){
+        # si la recherche se fait avec le mot de passe.
+        $addPasswordCheck = ' ';
+        if ($withPassword == true) {
+            $addPasswordCheck = " AND password = '".sha1($password)."' ";
+        }
+        # we will set columns to avoid password and others
+        $sql = "SELECT * "
+            ."FROM ".self::$usersTable
+            ." WHERE (userid = '".$credential."' OR username='".$credential."' OR email='".$credential
+            ."' OR phone_number='".$credential."')".$addPasswordCheck."AND is_activated=1 LIMIT 1 ";
+        $query = $this->db->query($sql);
+        if ( false == $query ) {
+            return $query;
+        } else {
+            return $query->row_array();
+        }
+
+    }
+
+    public function _updateProfile($data){
+        $updateQuery = "UPDATE ".self::$usersTable
+            ." SET username = '".$data['username'].
+            "', firstname = '".$data['firstname'].
+            "', lastname = '".$data['lastname'].
+            "', birth_date = '".$data['birth_date'].
+            "', gender = '".$data['gender'].
+            "', address = '".$data['address'].
+            "' WHERE userid = '".$data['userid']."' AND is_activated=1 LIMIT 1 ";
+        $wxc =$this->db->query($updateQuery);
+        //die($updateQuery);
+        if ( false === $wxc ) {
+            return $wxc;
+        } else {
+            $dataX = $this->findWithCredentials($data['credential'], false, '');
+            $this->_userQrCode($dataX);
+            return $dataX;
+        }
+    }
+
+    /** We generate user QRCode on every update of account
+     * @param $userData
+     */
+    public function _userQrCode($userData){
+        $qrData = $userData['userid'].'#'.$userData['username'].'#'.$userData['email'].'#'.$userData['phone_number']."#";
+        $qrData .= $userData['firstname'].'#'.$userData['lastname'].'#'.$userData['gender'];
+        $this->prolib::qrGenerate($userData['userid'], $qrData );
     }
 
 }
