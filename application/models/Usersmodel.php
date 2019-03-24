@@ -35,7 +35,7 @@ class Usersmodel extends CI_Model {
         //$qrcode = $this->prolib::qrGenerate( $userid );
         $arr = array('userid' => $userid);
         $data = array_merge($data, $arr);
-        if( $this->db->insert(tblUsers, $data) ){
+        if( $this->db->insert(self::$usersTable, $data) ){
             unset($data['password']);
             return $data;
         }else{
@@ -97,14 +97,15 @@ class Usersmodel extends CI_Model {
             "', lastname = '".$data['lastname'].
             "', birth_date = '".$data['birth_date'].
             "', gender = '".$data['gender'].
+            "', email = '".$data['email'].
+            "', id_card = '".$data['id_card'].
             "', address = '".$data['address'].
             "' WHERE userid = '".$data['userid']."' AND is_activated=1 LIMIT 1 ";
         $wxc =$this->db->query($updateQuery);
-        //die($updateQuery);
         if ( false === $wxc ) {
             return $wxc;
         } else {
-            $dataX = $this->findWithCredentials($data['credential'], false, '');
+            $dataX = $this->findWithCredentials($data['userid'], false, '');
             $this->_userQrCode($dataX);
             return $dataX;
         }
@@ -114,8 +115,17 @@ class Usersmodel extends CI_Model {
      * @param $userData
      */
     public function _userQrCode($userData){
-        $qrData = $userData['userid'].'#'.$userData['username'].'#'.$userData['email'].'#'.$userData['phone_number']."#";
-        $qrData .= $userData['firstname'].'#'.$userData['lastname'].'#'.$userData['gender'];
+        $qrData = json_encode(array(
+            'userid'=>$userData['userid'],
+            'username'=>$userData['username'],
+            'email'=>$userData['email'],
+            'phone_number'=>$userData['phone_number'],
+            'firstname'=>$userData['firstname'],
+            'lastname'=>$userData['lastname'],
+            'gender'=>$userData['gender'],
+            'id_card'=>$userData['id_card'],
+            'address'=>$userData['address']
+        ));
         $this->prolib::qrGenerate($userData['userid'], $qrData );
     }
 

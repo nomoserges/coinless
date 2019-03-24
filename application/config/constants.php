@@ -89,6 +89,6 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
  * CONTANTES DES NOMS DE TABLE
  */
 define('tblUsers', 'cor_users');
-define('tblSubscriptions', 'cor_subscriptions');
 define('tblAccounts', 'cor_accounts');
-define('tblTransactions', 'cor_transactions');
+define('tblEmissions', 'cor_emissions');
+define('tblBalances', 'cor_balances');
