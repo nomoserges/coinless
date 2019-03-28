@@ -10,7 +10,7 @@ class Opener extends CI_Controller {
     }
 
     public function register(){
-        # credential, lastname, firstname, userpassword, gender
+        $this->prolib::jsonInput();
         $credential = [];
         # we check if the credential is an email or phone number
         if( false === $this->prolib->checkEmail($_REQUEST['credential']) ){
@@ -69,6 +69,7 @@ class Opener extends CI_Controller {
 
     /** Confirm of registration */
     public function confirm() {
+        $this->prolib::jsonInput();
         # token, credential
         $xcv = $this->usersmodel->_confirm($_REQUEST);
         # Une erreur lors de la confirmation
@@ -83,6 +84,7 @@ class Opener extends CI_Controller {
 
     /** Login.  */
     public function login() {
+        $this->prolib::jsonInput();
         # credential, password
         $wxc = $this->usersmodel->findWithCredentials($_REQUEST['credential'], true, $_REQUEST['password']);
         if( false === $wxc ) {

@@ -10,6 +10,7 @@ class Users extends CI_Controller {
 
     /** Les informations du profil */
     public function profileData(){
+        $this->prolib::jsonInput();
         $profileData = $this->usersmodel->findWithCredentials($_REQUEST['userid']);
         if(false == $profileData) {
             $this->prolib->jsonOutput('error', 'User data', 'Error on loading data profil');
@@ -19,6 +20,7 @@ class Users extends CI_Controller {
     }
 
     public function updateProfile(){
+        $this->prolib::jsonInput();
         # email, id_card, username, firstname, lastname, birth_date, gender, address, userid
         //print_r($_REQUEST); die('df');
         $updateProfile = $this->usersmodel->_updateProfile($_REQUEST);
@@ -31,6 +33,7 @@ class Users extends CI_Controller {
 
     /** Creer un abonnement.    */
     public function subscription(){
+        $this->prolib::jsonInput();
         # userid, cost_value, num_days
         $data = array(
             'userid' => $_REQUEST['userid'],
@@ -47,6 +50,7 @@ class Users extends CI_Controller {
 
     /** List of user's subscriptions.   */
     public function currentsubscription(){
+        $this->prolib::jsonInput();
         # userid
         $qsd = $this->accountsmodel->_mySubscription($_REQUEST['userid']);
         if(false == $qsd) {
@@ -58,6 +62,7 @@ class Users extends CI_Controller {
 
     /** Make a deposit. */
     public function deposit(){
+        $this->prolib::jsonInput();
         # userid, amount, funds_origin, description
         $data = array(
             'type_operation' =>   'deposit',
@@ -77,6 +82,7 @@ class Users extends CI_Controller {
 
     /** Make a deposit. */
     public function payment(){
+        $this->prolib::jsonInput();
         # userid, amount, funds_origin, description
         $data = array(
             'type_operation' =>   'payment',

@@ -17,6 +17,13 @@ class Prolib {
         if($method == "OPTIONS") { die(); }
     }
 
+    /**
+     * Recupere les donnees RAW-JSON des formulaires client.
+     */
+    public static function jsonInput(){
+        $_REQUEST= json_decode(trim(file_get_contents('php://input')), true);
+    }
+
     /** Renvoie des informations au format json.
      * @param string $msgType
      * @param $msgTitle
